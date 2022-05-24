@@ -5,15 +5,15 @@ require 'dbconnect.php';
 require 'file_upload.php';
 require 'encription.php';
 
-define("orginal_dir","");
-define("encrypted_local_dir","");
-define("encrypted_cloud_dir","");
-define("decrypted_dir","");
+define('orginal_dir','../LocalStorage/orginal_files');
+define('encrypted_local_dir','../LocalStorage/encrypted_files_local');
+define('encrypted_cloud_dir','../LocalStorage/encrypted_files_cloud');
+define('decrypted_dir','../LocalStorage/decrypted_files');
 
 	if(isset($_POST['loadFileTbl'])) {
 		$db = new DbConnect;
 		$conn = $db->connect();
-		$stmt = $conn->prepare("SELECT * FROM `transformers`,`datafiles` WHERE transformers.trID=datafiles.trID ORDER BY DID DESC;");
+		$stmt = $conn->prepare("SELECT * FROM `file` where `orginal_name` ORDER BY FID DESC;");
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		echo json_encode(Responce::withData($result));
@@ -30,7 +30,7 @@ define("decrypted_dir","");
 	
     if(isset($_POST['addFileToLocal'])){
 		
-		$token = $_POST['addFileToLocal'];
+		$remark = $_POST['addFileToLocal'];
 
 		$file_new_name ="0";
 		$file_orginal_name ="0";
@@ -38,14 +38,14 @@ define("decrypted_dir","");
 		if ($_FILES['file']['size'] <> 0){
 			$file = $_FILES['file'];
 			$allowd = array('xlsx','xls');
-			$fileDestination = '../Upload';
+			$fileDestination = orginal_dir;
 			$file_orginal_name = $file['name'];
 			$file_new_name = uploadfile($file,$allowd,$fileDestination);
 		}
 
 
         $db = new DbConnect;
-		$sql = "INSERT INTO `file`(`orginal_name`, `file_code`, `token`, `pass_key`, `status`) VALUES (\"" . $file_orginal_name . "\",\"" . $file_new_name . "\",\"" . randomPassword() . "\",\"" . $token . "\",1);";
+		$sql = "INSERT INTO `file`(`orginal_name`, `file_code`, `remark`, `pass_key`, `status`) VALUES (\"" . $file_orginal_name . "\",\"" . $file_new_name . "\",\"" . randomPassword() . "\",\"" . $remark . "\",1);";
 
 		echo $sql;
 
@@ -61,11 +61,8 @@ define("decrypted_dir","");
 		{
 			$stmt = $conn->prepare($sql);
 			$stmt->execute();
-					echo '<script language="javascript">
-					window.alert("Data File Updated !");
-					window.location.href = "../add_data_table.html"
-					</script>';
-					exit();
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			echo json_encode(Responce::withData($result));
     	}
 	}
 
