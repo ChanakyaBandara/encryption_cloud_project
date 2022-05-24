@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once 'cloud-config.php';
   
 try {
     $adapter->authenticate();
