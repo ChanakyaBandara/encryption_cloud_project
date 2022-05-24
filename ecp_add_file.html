@@ -128,80 +128,53 @@
                     method="POST"
                     enctype="multipart/form-data"
                   >
-                    <div class="form-group">
-                      <label for="txtDrugName" class="col-form-label"
-                        ><b>Drug Name</b></label
-                      >
-                      <input
-                        class="form-control"
-                        type="text"
-                        value=""
-                        id="txtDrugName"
-                        name="txtDrugName"
-                        placeholder="Drug Name"
-                      />
-                    </div>
                     <div class="form-row">
                       <div class="col-md-6 mb-3">
                         <label for="txtDrugManComp"
-                          ><b>Manufacture Company</b></label
+                          ><b>Email Address</b></label
                         >
                         <input
-                          type="text"
+                          type="email"
                           class="form-control"
                           id="txtDrugManComp"
                           name="txtDrugManComp"
-                          placeholder="Manufacture Company"
+                          placeholder="Email Address"
                           value=""
                           required=""
                         />
                         <div class="valid-feedback">Looks good!</div>
                       </div>
                       <div class="col-md-6 mb-3">
-                        <label for="txtDrugStr"><b>Drug Strength</b></label>
+                        <label for="txtDrugStr"><b>Password</b></label>
                         <input
-                          type="text"
+                          type="password"
                           class="form-control"
                           id="txtDrugStr"
                           name="txtDrugStr"
-                          placeholder="Drug Strength"
+                          placeholder="Password"
                           value=""
                           required=""
                         />
                         <div class="valid-feedback">Looks good!</div>
                       </div>
                     </div>
-                    <div class="form-row">
-                      <div class="col-sm-3 mb-3 mb-sm-0">
-                        <img
-                          id="imageview"
-                          style="
-                            width: 300px;
-                            height: 300px;
-                            max-width: 100%;
-                            max-height: 100%;
-                            border-radius: 20px;
-                            border: 5px solid #555;
-                          "
-                        />
-                      </div>
-                    </div>
+                    
                     <div class="form-row">
                       <div class="col-md-6 mb-3">
-                        <label for="txtDrugDes"><b>Drug Description</b></label>
+                        <label for="txtDrugDes"><b>Token</b></label>
                         <input
                           type="text"
                           class="form-control"
                           id="txtDrugDes"
                           name="txtDrugDes"
-                          placeholder="Drug Description"
+                          placeholder="Add Your Token"
                           value=""
                           required=""
                         />
                         <div class="valid-feedback">Looks good!</div>
                       </div>
                       <div class="col-md-6 mb-3">
-                        <label for="txtDrugImg"><b>Image</b></label>
+                        <label for="txtDrugImg"><b>Add File</b></label>
                         <input
                           class="form-control form-control-user"
                           type="file"
@@ -213,14 +186,14 @@
                       </div>
                     </div>
                     <button type="reset" class="btn btn-warning mt-4 pr-4 pl-4">
-                      Reset
+                      Back to Home 
                     </button>
                     <button
                       type="submit"
                       name="addMedicine"
                       class="btn btn-primary mt-4 pr-4 pl-4"
                     >
-                      Submit
+                      Upload
                     </button>
                   </form>
                 </div>
