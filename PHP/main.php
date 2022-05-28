@@ -4,6 +4,7 @@ require_once 'vendor/autoload.php';
 require 'dbconnect.php';
 require 'file_upload.php';
 require 'encription.php';
+require 'responce.php';
 
 define('orginal_dir','../LocalStorage/orginal_files');
 define('encrypted_local_dir','../LocalStorage/encrypted_files_local');
@@ -16,7 +17,8 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 		$stmt = $conn->prepare("SELECT * FROM `file` where `orginal_name` ORDER BY FID DESC;");
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		echo json_encode(Responce::withData($result));
+		//echo json_encode(Responce::withData($result));
+		echo json_encode($result);
 	}
 
     if(isset($_POST['loadfileTblSearch'])) {
@@ -30,14 +32,14 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 	
     if(isset($_POST['addFileToLocal'])){
 		
-		$remark = $_POST['addFileToLocal'];
+		$remark = $_POST['remaek'];
 
 		$file_new_name ="0";
 		$file_orginal_name ="0";
 		
 		if ($_FILES['file']['size'] <> 0){
 			$file = $_FILES['file'];
-			$allowd = array('xlsx','xls');
+			$allowd = array('xlsx','xls','docx');
 			$fileDestination = orginal_dir;
 			$file_orginal_name = $file['name'];
 			$file_new_name = uploadfile($file,$allowd,$fileDestination);

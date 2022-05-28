@@ -2,7 +2,7 @@
 
 class Responce {
     private $statusCode = 200;
-    private $data = null;
+    private $data = [];
     private $error = null;
 
     public static function withError($statusCode, $error)
