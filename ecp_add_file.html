@@ -128,51 +128,9 @@
                     method="POST"
                     enctype="multipart/form-data"
                   >
-                    <div class="form-row">
-                      <div class="col-md-6 mb-3">
-                        <label for="txtDrugManComp"
-                          ><b>Email Address</b></label
-                        >
-                        <input
-                          type="email"
-                          class="form-control"
-                          id="txtDrugManComp"
-                          name="txtDrugManComp"
-                          placeholder="Email Address"
-                          value=""
-                          required=""
-                        />
-                        <div class="valid-feedback">Looks good!</div>
-                      </div>
-                      <div class="col-md-6 mb-3">
-                        <label for="txtDrugStr"><b>Password</b></label>
-                        <input
-                          type="password"
-                          class="form-control"
-                          id="txtDrugStr"
-                          name="txtDrugStr"
-                          placeholder="Password"
-                          value=""
-                          required=""
-                        />
-                        <div class="valid-feedback">Looks good!</div>
-                      </div>
-                    </div>
                     
                     <div class="form-row">
-                      <div class="col-md-6 mb-3">
-                        <label for="txtDrugDes"><b>Token</b></label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="txtDrugDes"
-                          name="txtDrugDes"
-                          placeholder="Add Your Token"
-                          value=""
-                          required=""
-                        />
-                        <div class="valid-feedback">Looks good!</div>
-                      </div>
+                      
                       <div class="col-md-6 mb-3">
                         <label for="txtDrugImg"><b>Add File</b></label>
                         <input
@@ -184,10 +142,23 @@
                         />
                         <div class="valid-feedback">Looks good!</div>
                       </div>
+
                     </div>
-                    <button type="reset" class="btn btn-warning mt-4 pr-4 pl-4">
-                      Back to Home 
-                    </button>
+                    <div class="form-row">
+                      <div class="col-md-6 mb-3">
+                        <label for="txtDrugDes"><b>Remark</b></label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="txtDrugDes"
+                          name="txtDrugDes"
+                          placeholder="Add Your Remark"
+                          value=""
+                          required=""
+                        />
+                        <div class="valid-feedback">Looks good!</div>
+                      </div>
+                    </div>
                     <button
                       type="submit"
                       name="addMedicine"
