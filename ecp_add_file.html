@@ -238,20 +238,5 @@
         document.getElementById("userName").textContent = userName;
       });
     </script>
-
-    <script language="javascript">
-      const image = document.getElementById("txtDrugImg");
-      const imageview = document.getElementById("imageview");
-
-      image.onchange = (e) => {
-        console.log("Image changed");
-        var file = image.files[0];
-        reader = new FileReader();
-        reader.onload = function () {
-          imageview.src = reader.result;
-        };
-        reader.readAsDataURL(file);
-      };
-    </script>
   </body>
 </html>
