@@ -1,42 +1,32 @@
-function loadPatient() {
-  var DID = getDID();
+function loadFiles() {
+  var UID = getDID();
   $.ajax({
-    url: "PHP/doctor.php",
+    url: "PHP/user.php",
     method: "post",
-    data: "loadPatient=" + DID,
+    data: "loadFiles=" + UID,
   }).done(function (result) {
     console.log(result);
     result = JSON.parse(result);
     //console.log(result);
-    $("#doctorViewPatientTBL").empty();
-    $("#doctorViewPatientTBL").append(
+    $("#userViewFilesTBL").empty();
+    $("#userViewFilesTBL").append(
       //`MID`, `name`, `email`, `nic`, `age`, `phone`, `gender`
-      "<thead><tr><th>Reference No</th><th>Name</th><th>Email</th><th>NIC</th><th>Age</th><th>Phone</th><th>Gender</th><th>Timestamp</th></thead>"
+      "<thead><tr><th>User</th><th>File Name</th><th>File Size</th><th>Upload Date</th><th>Action</th>"
     );
     result.forEach(function (result) {
-      $("#doctorViewPatientTBL").append(
-        '<tr onClick="loadAddPrescription(' +
-        result.DQID +
-        ')"><td>' +
-        result.DQID +
-        '</td><td>' +
+      $("#userViewFilesTBL").append(
+        '<tr><td>' +
         result.name +
         '</td><td>' +
-        result.email +
+        result.orginal_name +
         '</td><td>' +
-        result.nic +
-        '</td><td>' +
-        result.age +
-        '</td><td>' +
-        result.phone +
-        '</td><td>' +
-        result.gender +
+        result.size +
         '</td><td>' +
         result.timestamp +
-        '</td></tr>'
+        '</td><td><button type="button" class="btn btn-danger">Download</button></td></td></tr>'
       );
     });
-    $("#doctorViewPatientTBL").append("</tbody>");
+    $("#userViewFilesTBL").append("</tbody>");
   });
 }
 
@@ -174,7 +164,7 @@ function loadDrugs() {
 }
 
 function getDID() {
-  return localStorage.getItem("DID");
+  return localStorage.getItem("UID");
 }
 
 function getUserName() {

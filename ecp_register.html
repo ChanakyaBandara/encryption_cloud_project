@@ -49,7 +49,7 @@
     <div class="login-area login-bg">
       <div class="container">
         <div class="login-box ptb--100">
-          <form action="PHP/admin.php" method="POST">
+          <form action="PHP/user.php" method="POST">
             <div class="login-form-head" style="background-color: #1F4788;">
               <h4>Create a New Account</h4>
               <p>
@@ -59,27 +59,27 @@
             <div class="login-form-body">
               <div class="form-gp">
                 <label for="exampleInputEmail1">Your Name</label>
-                <input type="text" value="" id="txtDocName" name="txtDocName" required="true"/>
+                <input type="text" value="" id="txtRegName" name="txtRegName" required="true"/>
                 <div class="text-danger"></div>
               </div>
               <div class="form-gp">
                 <label for="exampleInputPassword1">Enter Email Here</label>
-                <input type="email" class="form-control" id="txtDocEmail" name="txtDocEmail" value="" required="true" />
+                <input type="email" class="form-control" id="txtRegEmail" name="txtRegEmail" value="" required="true" />
                 <div class="text-danger"></div>
               </div>
               <div class="form-gp">
                 <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="txtMedicalRegID" name="txtMedicalRegID"/>
+                <input type="password" class="form-control" id="txtRegPass" name="txtRegPass"/>
                 <div class="text-danger"></div>
               </div>
               <div class="submit-btn-area" style="margin-top: 10%;">
-                <button id="form_submit" name="addDoctor" type="submit">
+                <button id="form_submit" name="addUser" type="submit">
                   Register<i class="ti-arrow-right"></i>
                 </button>
               </div>
               <div class="form-footer text-center mt-5">
                 <p class="text-muted">
-                  Have an account? <a href="index.html">Sign in</a>
+                  Have an account? <a href="ecp_login.html">Sign in</a>
                 </p>
               </div>
             </div>

@@ -10,12 +10,12 @@
 
 			echo'<script language="javascript">
 						window.alert("Please fill the empty fields")
-						window.location.href = "../login.html"
+						window.location.href = "../ecp_login.html"
 						</script>';
 						exit();
 		}else{
 
-			$sql = "SELECT * FROM login WHERE email=\"" . $username . "\"";
+			$sql = "SELECT * FROM user WHERE email=\"" . $username . "\"";
 
 			$db = new DbConnect;
 
@@ -23,7 +23,7 @@
 
 				echo'<script language="javascript">
 						window.alert("SQL ERROR. Please check the SQL code ")
-						window.location.href = "../login.html"
+						window.location.href = "../ecp_login.html"
 						</script>';
 						exit();
 						
@@ -44,16 +44,17 @@
                         $name = $rows['name'];
                     }
 
-					$pwdcheck = false;
+					$pwdcheck = true;
 
-					if ($password == $passveri){
+					if (password_verify($password, $passveri)){
 						$pwdcheck = true;
 					}
 
 					if($pwdcheck == false){
+
 						echo'<script language="javascript">
 						window.alert("You entered a Wrong Password !")
-						window.location.href = "../login.html"
+						window.location.href = "../ecp_login.html"
 						</script>';
 						exit();
 						
@@ -63,14 +64,14 @@
 									localStorage.setItem("UID","'.$UID.'");
 									localStorage.setItem("Name","'.$name.'");
 									localStorage.setItem("Email","'.$username.'");
-									window.location.href = "../index.html"
+									window.location.href = "../ecp_dashboard.html"
 									</script>';
 									exit();
 
 					}else{
 						echo'<script language="javascript">
 						window.alert("You entered a Wrong Password !")
-						window.location.href = "../index.html"
+						window.location.href = "../ecp_login.html"
 						</script>';
 						exit();
 						
@@ -79,7 +80,7 @@
 				}else{
 					echo'<script language="javascript">
 						window.alert("Username incorrect! Please check the username and try again..")
-						window.location.href = "../index.html"
+						window.location.href = "../ecp_login.html"
 						</script>';
 						exit();
 				}
@@ -89,7 +90,7 @@
 
 		echo'<script language="javascript">
 		window.alert("Wrong connection")
-		window.location.href = "../index.html"
+		window.location.href = "../ecp_login.html"
 		</script>';
 		exit();
 
