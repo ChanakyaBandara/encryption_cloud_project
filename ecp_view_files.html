@@ -109,8 +109,9 @@
                 <div class="col-sm-6" style="margin-top: 2%; margin-bottom: 2%">
                   <div class="input-group">
                     <input type="search" class="form-control rounded" placeholder="Search by File" aria-label="Search"
-                      aria-describedby="search-addon" style="margin-right: 2%;" />
-                    <button type="button" class="btn btn-outline-primary">search</button>
+                      aria-describedby="search-addon" style="margin-right: 2%;" id="trSearchID" />
+                      <button type="button" class="btn btn-outline-primary" id="trSearchBtn">Search</button>
+                      <button type="button" class="btn btn-outline-secondary" id="loadAllBtn">Load All</button>
                   </div>
                 </div>
                 <div class="single-table">
@@ -188,8 +189,20 @@
   <script language="javascript">
     $(document).ready(function () {
       var userName = getUserName();
+      var trSearchID = document.getElementById('trSearchID');
+      var trSearchBtn = document.getElementById('trSearchBtn');
+      var loadAllBtn = document.getElementById('loadAllBtn');
+
       document.getElementById("userName").textContent = userName;
-      loadFiles();
+      loadFiles(); 
+
+      trSearchBtn.addEventListener('click', function () {
+        loadFilesSearch(trSearchID.value);
+      });
+
+      loadAllBtn.addEventListener('click', function () {
+        loadFiles();
+      });
     });
   </script>
 </body>

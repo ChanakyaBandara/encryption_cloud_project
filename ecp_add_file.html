@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="assets/css/default-css.css" />
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="assets/css/responsive.css" />
+  <link rel="stylesheet" href="assets/css/progress.css" />
   <!-- modernizr css -->
   <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
@@ -108,24 +109,27 @@
             <div class="card">
               <div class="card-body">
                 <h4 class="header-title">Add Files</h4>
-                <form name="contact">
-
+                <form id="addFileForm" enctype="multipart/form-data">
                   <div class="form-row">
-
                     <div class="col-md-6 mb-3">
-                      <label for="txtDrugImg"><b>Add File</b></label>
-                      <input class="form-control form-control-user" type="file" name="file" id="txtDrugImg"
-                        placeholder="Image" />
-                      <div class="valid-feedback">Looks good!</div>
+                      <label for="file"><b>Add File</b></label>
+                      <input class="form-control" type="file" name="file" id="file" placeholder="File" required />
                     </div>
-
                   </div>
                   <div class="form-row">
                     <div class="col-md-6 mb-3">
-                      <label for="txtDrugDes"><b>Remark</b></label>
-                      <input type="text" class="form-control" id="txtDrugDes" name="remark"
-                        placeholder="Add Your Remark" value="" required="" />
-                      <div class="valid-feedback">Looks good!</div>
+                      <label for="remark"><b>Remark</b></label>
+                      <input type="text" class="form-control" id="remark" name="remark" placeholder="Add Your Remark" required />
+                    </div>
+                  </div>
+                  <input type="hidden" id="UID" name="UID" value="1">
+                  <div class="form-row">
+                    <div class="col-md-6 mb-3">
+                      <div class="progress">
+                        <div id="dynamic" class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                          <span id="current-progress"></span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <button type="submit" name="addFileToLocal" class="btn btn-primary mt-4 pr-4 pl-4"

@@ -46,6 +46,3 @@ if(isset($_GET['path'],$_GET['namearr'])){
         }
         
     }
-
-
-?>
