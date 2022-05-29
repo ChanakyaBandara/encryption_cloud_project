@@ -1,3 +1,5 @@
+let dataArray = [];
+
 function loadFiles() {
   var UID = getUID();
   $.ajax({
@@ -7,13 +9,15 @@ function loadFiles() {
   }).done(function (result) {
     console.log(result);
     result = JSON.parse(result);
+    dataArray.length = 0;
+    dataArray = result;
     //console.log(result);
     $("#userViewFilesTBL").empty();
     $("#userViewFilesTBL").append(
       //`MID`, `name`, `email`, `nic`, `age`, `phone`, `gender`
       "<thead><tr><th>File Name</th><th>Remark</th><th>Upload Date</th><th>Download Count</th><th>Action</th>"
     );
-    result.forEach(function (result) {
+    result.forEach(function (result, index) {
       $("#userViewFilesTBL").append(
         '<tr><td>' +
         result.orginal_name +
@@ -23,7 +27,7 @@ function loadFiles() {
         result.timestamp +
         '</td><td>' +
         result.download_count +
-        '</td><td><button type="button" class="btn btn-danger">Download</button></td></td></tr>'
+        '</td><td><button type="button" class="btn-sm btn-danger"  onclick="rowClickHandle(' + index + ')">Download</button></td></td></tr>'
       );
     });
     $("#userViewFilesTBL").append("</tbody>");
@@ -35,16 +39,17 @@ function loadFilesSearch(searchKey) {
     url: 'PHP/main.php',
     method: 'post',
     data: 'loadfileTblSearch=' + searchKey
-  }).done(function (result) {
+  }).done(function (result, index) {
     console.log(result);
     result = JSON.parse(result);
+    dataArray.length = 0;
+    dataArray = result;
     //console.log(result);
     $("#userViewFilesTBL").empty();
     $("#userViewFilesTBL").append(
-      //`MID`, `name`, `email`, `nic`, `age`, `phone`, `gender`
       "<thead><tr><th>File Name</th><th>Remark</th><th>Upload Date</th><th>Download Count</th><th>Action</th>"
     );
-    result.forEach(function (result) {
+    result.forEach(function (result, index) {
       $("#userViewFilesTBL").append(
         '<tr><td>' +
         result.orginal_name +
@@ -54,13 +59,18 @@ function loadFilesSearch(searchKey) {
         result.timestamp +
         '</td><td>' +
         result.download_count +
-        '</td><td><button type="button" class="btn btn-danger">Download</button></td></td></tr>'
+        '</td><td><button type="button" class="btn-sm btn-danger"  onclick="rowClickHandle(' + index + ')">Download</button></td></td></tr>'
       );
     });
     $("#userViewFilesTBL").append("</tbody>");
   });
 }
 
+function rowClickHandle(index) {
+  console.log(dataArray[index])
+  row = dataArray[index];
+  decryptFile(row.FID, row.file_code, row.pass_key)
+}
 
 $("form#addFileForm").on("submit", function (e) {
   console.log(e)
@@ -120,15 +130,26 @@ function downloadFormCloud(fileName) {
   });
 }
 
-function decryptFile(fileName, pass_key) {
+function decryptFile(FID, fileName, pass_key) {
   $.ajax({
     url: "PHP/main.php",
     method: "post",
-    data: "decryptFile=" + fileName + "&pass_key=" + pass_key,
+    data: "decryptFile=" + fileName + "&pass_key=" + pass_key + "&FID=" + FID,
   }).done(function (result) {
-    console.log(result.encryptedFileName);
-    updateProgressBar(66)
+    result = JSON.parse(result);
+    console.log(result)
+    console.log(result.decryptedFileName);
+    url = 'PHP/file_download.php?file_name=' +fileName
+    download_to_pc(url,result.decryptedFileName)
+    //updateProgressBar(66)
   });
+}
+
+function download_to_pc(fileUrl, fileName) {
+  var a = document.createElement("a");
+  a.href = fileUrl;
+  a.setAttribute("download", fileName);
+  a.click();
 }
 
 function updateProgressBar(current_progress) {

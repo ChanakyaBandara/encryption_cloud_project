@@ -43,7 +43,7 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 		
 		if ($_FILES['file']['size'] <> 0){
 			$file = $_FILES['file'];
-			$allowd = array('xlsx','xls','docx');
+			$allowd = array('xlsx','xls','docx','pdf','txt');
 			$fileDestination = orginal_dir;
 			$file_orginal_name = $file['name'];
 			$file_new_name = uploadfile($file,$allowd,$fileDestination);
@@ -99,9 +99,17 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 
 	}
 
-	if(isset($_POST['decryptFile'])){
-		if(decryptFileWithKey(orginal_dir.$_POST['decryptFile'],orginal_dir.$_POST['decryptFile'],$_POST['key'])){
-			echo json_encode(Responce::withData($_POST['decryptFile']));
+	if(isset($_POST['decryptFile']) && isset($_POST['pass_key'])){
+
+		$fileExt = explode('.',$_POST['decryptFile']);
+		array_pop($fileExt);
+		$rawName = implode('.',$fileExt);
+		$decrypted_file = decrypted_dir.'/'.$_POST['decryptFile'];
+		$encrypted_file = encrypted_cloud_dir.'/'.$rawName.'.bin';
+
+		if(decryptFileWithKey($encrypted_file,$decrypted_file,$_POST['pass_key'])){
+			$myObj->decryptedFileName = $_POST['decryptFile'];
+			echo json_encode($myObj);
 		}else{
 			echo json_encode(Responce::withError(500,"Internal server error"));
 		}
