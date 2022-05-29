@@ -10,7 +10,7 @@ function uploadfile($file,$allowd,$fileDestination){
 	    $fileExt = explode('.',$filename);
         $fileActualExt = strtolower(end($fileExt));
 		$fileuniqid = uniqid('',true);
-        echo $fileActualExt;
+        //echo $fileActualExt;
     	if (in_array($fileActualExt,$allowd)){
 	        if ($fileerror == 0 ){
 	            if ($filesize < 100000000){
@@ -82,5 +82,3 @@ function upload_multi_files($file,$allowd,$fileDestination){
 	return $name_array;
  
 }
-
-?>

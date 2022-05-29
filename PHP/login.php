@@ -86,21 +86,13 @@
 				}
 			}
 		}
-	}else{
-
-		echo'<script language="javascript">
-		window.alert("Wrong connection")
-		window.location.href = "../ecp_login.html"
-		</script>';
-		exit();
-
 	}
 
 	if(isset($_POST['register'])){
 		
-		$username = $_POST['uname'];
-		$name = $_POST['name'];
-		$password = $_POST['pword'];
+		$username = $_POST['txtRegEmail'];
+		$name = $_POST['txtRegName'];
+		$password = $_POST['txtRegPass'];
 
 		if(empty($username) || empty($name) || empty($password)){
 
@@ -122,21 +114,13 @@
 			else {
 				$stmt = $conn->prepare($sql);
 				$stmt->execute();
-				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				echo json_encode($result);
+				echo '<script language="javascript">
+				window.alert("Succesfully added!");
+				window.location.href = "../ecp_login.html"
+				</script>';
+				exit();
 			}
-
 		}
-		
-
-	}else{
-
-		echo'<script language="javascript">
-		window.alert("Wrong connection")
-		window.location.href = "../index.html"
-		</script>';
-		exit();
-
 	}
 	
 ?>

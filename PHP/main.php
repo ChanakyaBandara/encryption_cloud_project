@@ -4,6 +4,9 @@ require_once 'vendor/autoload.php';
 require 'dbconnect.php';
 require 'file_upload.php';
 require 'encription.php';
+require 'responce.php';
+
+error_reporting(E_ALL ^ E_WARNING);
 
 define('orginal_dir','../LocalStorage/orginal_files');
 define('encrypted_local_dir','../LocalStorage/encrypted_files_local');
@@ -13,10 +16,11 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 	if(isset($_POST['loadFileTbl'])) {
 		$db = new DbConnect;
 		$conn = $db->connect();
-		$stmt = $conn->prepare("SELECT * FROM `file` where `orginal_name` ORDER BY FID DESC;");
+		$stmt = $conn->prepare("SELECT * FROM `file` where `UID` = " . $_POST['loadFileTbl'] . " ORDER BY FID DESC;");
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		echo json_encode(Responce::withData($result));
+		//echo json_encode(Responce::withData($result));
+		echo json_encode($result);
 	}
 
     if(isset($_POST['loadfileTblSearch'])) {
@@ -25,29 +29,30 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 		$stmt = $conn->prepare("SELECT * FROM `file` where `orginal_name` LIKE \"%" . $_POST['loadfileTblSearch'] . "%\" ;");
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		echo json_encode(Responce::withData($result));
+		//echo json_encode(Responce::withData($result));
+		echo json_encode($result);
 	}
 	
-    if(isset($_POST['addFileToLocal'])){
+    if(isset($_POST['remark']) || isset($_POST['file'])){
 		
-		$remark = $_POST['addFileToLocal'];
+		$remark = $_POST['remark'];
+		$UID = $_POST['UID'];
 
 		$file_new_name ="0";
 		$file_orginal_name ="0";
 		
 		if ($_FILES['file']['size'] <> 0){
 			$file = $_FILES['file'];
-			$allowd = array('xlsx','xls');
+			$allowd = array('xlsx','xls','docx');
 			$fileDestination = orginal_dir;
 			$file_orginal_name = $file['name'];
 			$file_new_name = uploadfile($file,$allowd,$fileDestination);
 		}
 
+		$pass_key = randomPassword();
 
         $db = new DbConnect;
-		$sql = "INSERT INTO `file`(`orginal_name`, `file_code`, `remark`, `pass_key`, `status`) VALUES (\"" . $file_orginal_name . "\",\"" . $file_new_name . "\",\"" . randomPassword() . "\",\"" . $remark . "\",1);";
-
-		echo $sql;
+		$sql = "INSERT INTO `file`(`orginal_name`, `file_code`, `remark`, `pass_key`, `status`, `UID`) VALUES (\"" . $file_orginal_name . "\",\"" . $file_new_name . "\",\"" . $remark . "\",\"" . $pass_key . "\",1," . $UID . ");";
 
 		if(!$conn = $db->connect())
 			
@@ -61,14 +66,26 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 		{
 			$stmt = $conn->prepare($sql);
 			$stmt->execute();
-			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			echo json_encode(Responce::withData($result));
+			$FID = $conn->lastInsertId();
+			$myObj->FID = $FID;
+			$myObj->orginal_name = $file_orginal_name;
+			$myObj->file_code = $file_new_name;
+			$myObj->remark = $remark;
+			$myObj->pass_key = $pass_key;
+			echo json_encode($myObj);
     	}
 	}
 
-	if(isset($_POST['encryptFile'])){
-		if(encryptFileWithKey(orginal_dir.$_POST['encryptFile'],orginal_dir.$_POST['encryptFile'],$_POST['key'])){
-			echo json_encode(Responce::withData($_POST['encryptFile']));
+	if(isset($_POST['encryptFile']) && isset($_POST['pass_key'])){
+		
+	    $fileExt = explode('.',$_POST['encryptFile']);
+		array_pop($fileExt);
+		$rawName = implode('.',$fileExt);
+		$orginal_file = orginal_dir.'/'.$_POST['encryptFile'];
+		$encrypted_file = encrypted_local_dir.'/'.$rawName.'.bin';
+		if(encryptFileWithKey($orginal_file,$encrypted_file,$_POST['pass_key'])){
+			$myObj->encryptedFileName = $rawName.'.bin';
+			echo json_encode($myObj);
 		}else{
 			echo json_encode(Responce::withError(500,"Internal server error"));
 		}
@@ -92,7 +109,7 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 
 
 	function randomPassword() {
-        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()<>?';
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_';
         $pass = array(); //remember to declare $pass as an array
         $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
         for ($i = 0; $i < 20; $i++) {
@@ -101,7 +118,3 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
         }
         return implode($pass); //turn the array into a string
     }
-	
-	
-
-?>
