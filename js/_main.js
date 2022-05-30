@@ -69,7 +69,7 @@ function loadFilesSearch(searchKey) {
 function rowClickHandle(index) {
   console.log(dataArray[index])
   row = dataArray[index];
-  decryptFile(row.FID, row.file_code, row.pass_key)
+  downloadFormCloud(row.FID, row.file_code, row.pass_key)
 }
 
 $("form#addFileForm").on("submit", function (e) {
@@ -123,13 +123,15 @@ function uploadToCloud(fileName) {
   });
 }
 
-function downloadFormCloud(fileName) {
+function downloadFormCloud(FID, file_code, pass_key) {
   $.ajax({
     url: "PHP/main.php",
     method: "post",
-    data: "encryptFile=" + fileName,
+    data: "getFileFromCloud=" + file_code,
   }).done(function (result) {
-    console.log(result.encryptedFileName);
+    result = JSON.parse(result);
+    console.log(result.encryptedCloudFileName);
+    decryptFile(FID, file_code, pass_key)
     updateProgressBar(33)
   });
 }

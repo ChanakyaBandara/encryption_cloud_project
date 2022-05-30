@@ -98,7 +98,12 @@ error_reporting(E_ALL ^ E_WARNING);
 	}
 
 	if(isset($_POST['getFileFromCloud'])){
-
+		$fileExt = explode('.',$_POST['getFileFromCloud']);
+		array_pop($fileExt);
+		$rawName = implode('.',$fileExt);
+		download_drive_file($rawName.'.bin');
+		$myObj->encryptedCloudFileName = $rawName.'.bin';
+		echo json_encode($myObj);
 	}
 
 	if(isset($_POST['decryptFile']) && isset($_POST['pass_key'])){
