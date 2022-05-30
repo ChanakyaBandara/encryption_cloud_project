@@ -1,4 +1,5 @@
 <?php
+require_once 'vendor/autoload.php';
 require_once 'cloud-db.php';
   
 define('GOOGLE_CLIENT_ID', '454685669116-9ta10ceuqsapjk50qmmmsrs394kbh7qb.apps.googleusercontent.com');

@@ -1,4 +1,5 @@
 <?php 
+require_once 'vendor/autoload.php';
 
 define('orginal_dir','../LocalStorage/orginal_files');
 define('encrypted_local_dir','../LocalStorage/encrypted_files_local');

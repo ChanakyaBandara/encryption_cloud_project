@@ -122,7 +122,7 @@
                       <input type="text" class="form-control" id="remark" name="remark" placeholder="Add Your Remark" required />
                     </div>
                   </div>
-                  <input type="hidden" id="UID" name="UID" value="1">
+                  <input type="hidden" id="UIDtxt" name="UID">
                   <div class="form-row">
                     <div class="col-md-6 mb-3">
                       <div class="progress">
@@ -175,8 +175,10 @@
   <script language="javascript" src="js/_main.js"></script>
   <script language="javascript">
     $(document).ready(function () {
-      var userName = getUserName();
+      const userName = getUserName();
+      const UID = getUID();
       document.getElementById("userName").textContent = userName;
+      document.getElementById("UIDtxt").value = UID;
     });
   </script>
 </body>
