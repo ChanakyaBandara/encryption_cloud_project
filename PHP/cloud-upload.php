@@ -1,10 +1,7 @@
 <?php
 require_once 'cloud-config.php';
- 
-$drive_folder_id = '1xeq5etB0YeGMiLI_RUYVeWFWW1QI73u4';
-create_file_in_drive_folder($drive_folder_id);
   
-function create_file_in_drive_folder($drive_folder_id) {
+function create_file_in_drive_folder($drive_folder_id,$fileName) {
   
     $client = new Google_Client();
   
@@ -21,7 +18,7 @@ function create_file_in_drive_folder($drive_folder_id) {
     $service = new Google\Service\Drive($client);
  
     try {
-        $file = getcwd(). '/1.jpg';
+        $file = encrypted_local_dir.'/'.$fileName;
         $filename = basename($file);
         $filetype = mime_content_type($file);
  
@@ -35,7 +32,6 @@ function create_file_in_drive_folder($drive_folder_id) {
             'mimeType' => $filetype,
             'uploadType' => 'multipart',
         ]);
-        echo "File is uploaded successfully.";
     } catch(Exception $e) {
         if( 401 == $e->getCode() ) {
             $refresh_token = $db->get_refersh_token();
@@ -56,7 +52,7 @@ function create_file_in_drive_folder($drive_folder_id) {
   
             $db->update_access_token(json_encode($data));
   
-            create_file_in_drive_folder($drive_folder_id);
+            create_file_in_drive_folder($drive_folder_id,$fileName);
         } else {
             echo $e->getMessage(); //print the error
         }

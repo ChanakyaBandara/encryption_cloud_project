@@ -1,8 +1,6 @@
 <?php
 require_once 'cloud-config.php';
  
-download_drive_file('1.jpg'); // say 1.jpg
- 
 function download_drive_file($filename = '') {
  
     $client = new Google_Client();
@@ -39,7 +37,7 @@ function download_drive_file($filename = '') {
         $http = $client->authorize();
  
         // Open a file for writing
-        $fp = fopen(time().'-'.$filename, 'w');
+        $fp = fopen(encrypted_cloud_dir.'/'.$filename, 'w');
  
         // Download in 1 MB chunks
         $chunkSizeBytes = 1 * 1024 * 1024;
@@ -65,7 +63,7 @@ function download_drive_file($filename = '') {
         // close the file pointer
         fclose($fp);
  
-        echo "File is downloaded to your filesystem.";
+        //echo "File is downloaded to your filesystem.";
     } catch(Exception $e) {
         if( 401 == $e->getCode() ) {
             $refresh_token = $db->get_refersh_token();

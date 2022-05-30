@@ -1,4 +1,9 @@
 <?php 
+
+define('orginal_dir','../LocalStorage/orginal_files');
+define('encrypted_local_dir','../LocalStorage/encrypted_files_local');
+define('encrypted_cloud_dir','../LocalStorage/encrypted_files_cloud');
+define('decrypted_dir','../LocalStorage/decrypted_files');
 	class DbConnect {
 		private $host = 'localhost';
 		private $dbName = 'encryption_cloud_project';

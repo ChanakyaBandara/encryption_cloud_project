@@ -6,11 +6,11 @@ if(isset($_POST['addUser'])) {
     $txtRegEmail = $_POST['txtRegEmail'];
     $txtRegPass = $_POST['txtRegPass'];
 
-    $db = new DbConnect;
+    $pdo_db = new DbConnect;
     $hashed = password_hash($txtRegPass,PASSWORD_BCRYPT);
     $sql = "INSERT INTO  `user`( `email`, `name`,`Password`) VALUES ('$txtRegEmail','$txtRegName','$hashed')";
 
-    if(!$conn = $db->connect()){
+    if(!$conn = $pdo_db->connect()){
         echo "SQL Error";
         exit();
     }

@@ -1,11 +1,25 @@
 <?php
-class DB {  
+class DB {
+    private $dbHost     = "localhost";
+    private $dbUsername = "root";
+    private $dbPassword = "";
+    private $dbName     = "encryption_cloud_project";
+
+    public function __construct(){
+        if(!isset($this->db)){
+            // Connect to the database
+            $conn = new mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
+            if($conn->connect_error){
+                die("Failed to connect with MySQL: " . $conn->connect_error);
+            }else{
+                $this->db = $conn;
+            }
+        }
+    }
+  
     public function is_table_empty() {
-        $db = new DbConnect;
-		$conn = $db->connect();
-        $stmt = $conn->prepare("SELECT id FROM google_oauth WHERE provider = 'google'");
-		$stmt->execute();
-        if($stmt->num_rows) {
+        $result = $this->db->query("SELECT id FROM google_oauth WHERE provider = 'google'");
+        if($result->num_rows) {
             return false;
         }
   
@@ -13,11 +27,8 @@ class DB {
     }
   
     public function get_access_token() {
-        $db = new DbConnect;
-		$conn = $db->connect();
-        $stmt = $conn->prepare("SELECT provider_value FROM google_oauth WHERE provider = 'google'");
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $sql = $this->db->query("SELECT provider_value FROM google_oauth WHERE provider = 'google'");
+        $result = $sql->fetch_assoc();
         return json_decode($result['provider_value']);
     }
   
@@ -27,15 +38,10 @@ class DB {
     }
   
     public function update_access_token($token) {
-        $sql = "";
         if($this->is_table_empty()) {
-            $sql = "INSERT INTO google_oauth(provider, provider_value) VALUES('google', '$token')";
+            $this->db->query("INSERT INTO google_oauth(provider, provider_value) VALUES('google', '$token')");
         } else {
-            $sql = "UPDATE google_oauth SET provider_value = '$token' WHERE provider = 'google'";
+            $this->db->query("UPDATE google_oauth SET provider_value = '$token' WHERE provider = 'google'");
         }
-        $db = new DbConnect;
-        $conn = $db->connect();
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
     }
 }

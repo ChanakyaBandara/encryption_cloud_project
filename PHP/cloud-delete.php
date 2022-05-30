@@ -1,7 +1,7 @@
 <?php
 require_once 'cloud-config.php';
  
-delete_file_from_drive('1.jpg'); // say 1.jpg
+// delete_file_from_drive('1.jpg'); // say 1.jpg
   
 function delete_file_from_drive($filename = '') {
   

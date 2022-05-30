@@ -1,9 +1,8 @@
 <?php
-require_once 'vendor/autoload.php';
 require_once 'cloud-db.php';
   
-define('GOOGLE_CLIENT_ID', '1046218056680-oupb7t03a1p6j3nh0qvjqcdiina5ua7k.apps.googleusercontent.com');
-define('GOOGLE_CLIENT_SECRET', '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');
+define('GOOGLE_CLIENT_ID', '454685669116-9ta10ceuqsapjk50qmmmsrs394kbh7qb.apps.googleusercontent.com');
+define('GOOGLE_CLIENT_SECRET', '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');
   
 $config = [
     'callback' => 'http://localhost/encryption_cloud_project/PHP/callback.php',
