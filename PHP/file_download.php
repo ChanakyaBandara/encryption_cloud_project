@@ -1,6 +1,5 @@
 <?php
-define('decrypted_dir','../LocalStorage/decrypted_files');
-// define('SITE_ROOT',dirname(__FILE__));
+
 if (isset($_GET['path'], $_GET['name'])) {
 
     $path_dir = $_GET['path'];

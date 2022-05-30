@@ -103,7 +103,11 @@ function encryptFile(fileName, pass_key) {
     method: "post",
     data: "encryptFile=" + fileName + "&pass_key=" + pass_key,
   }).done(function (result) {
+    console.log(result);
+    result = JSON.parse(result);
+    console.log(result);
     console.log(result.encryptedFileName);
+    uploadToCloud(result.encryptedFileName)
     updateProgressBar(66)
   });
 }
@@ -112,7 +116,7 @@ function uploadToCloud(fileName) {
   $.ajax({
     url: "PHP/main.php",
     method: "post",
-    data: "encryptFile=" + fileName,
+    data: "addFileToCloud=" + fileName,
   }).done(function (result) {
     console.log(result.encryptedFileName);
     updateProgressBar(100)

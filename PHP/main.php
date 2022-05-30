@@ -5,17 +5,15 @@ require 'dbconnect.php';
 require 'file_upload.php';
 require 'encription.php';
 require 'responce.php';
+require 'cloud-upload.php';
+require 'cloud-download.php';
+require 'cloud-create-folder.php';
 
 error_reporting(E_ALL ^ E_WARNING);
 
-define('orginal_dir','../LocalStorage/orginal_files');
-define('encrypted_local_dir','../LocalStorage/encrypted_files_local');
-define('encrypted_cloud_dir','../LocalStorage/encrypted_files_cloud');
-define('decrypted_dir','../LocalStorage/decrypted_files');
-
 	if(isset($_POST['loadFileTbl'])) {
-		$db = new DbConnect;
-		$conn = $db->connect();
+		$pdo_db = new DbConnect;
+		$conn = $pdo_db->connect();
 		$stmt = $conn->prepare("SELECT * FROM `file` where `UID` = " . $_POST['loadFileTbl'] . " ORDER BY FID DESC;");
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -24,8 +22,8 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 	}
 
     if(isset($_POST['loadfileTblSearch'])) {
-		$db = new DbConnect;
-		$conn = $db->connect();
+		$pdo_db = new DbConnect;
+		$conn = $pdo_db->connect();
 		$stmt = $conn->prepare("SELECT * FROM `file` where `orginal_name` LIKE \"%" . $_POST['loadfileTblSearch'] . "%\" ;");
 		$stmt->execute();
 		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -51,10 +49,10 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 
 		$pass_key = randomPassword();
 
-        $db = new DbConnect;
+        $pdo_db = new DbConnect;
 		$sql = "INSERT INTO `file`(`orginal_name`, `file_code`, `remark`, `pass_key`, `status`, `UID`) VALUES (\"" . $file_orginal_name . "\",\"" . $file_new_name . "\",\"" . $remark . "\",\"" . $pass_key . "\",1," . $UID . ");";
 
-		if(!$conn = $db->connect())
+		if(!$conn = $pdo_db->connect())
 			
 		{
 			echo'<script language="javascript">
@@ -85,6 +83,7 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 		$encrypted_file = encrypted_local_dir.'/'.$rawName.'.bin';
 		if(encryptFileWithKey($orginal_file,$encrypted_file,$_POST['pass_key'])){
 			$myObj->encryptedFileName = $rawName.'.bin';
+			$myObj->FileName = $_POST['encryptFile'];
 			echo json_encode($myObj);
 		}else{
 			echo json_encode(Responce::withError(500,"Internal server error"));
@@ -92,7 +91,10 @@ define('decrypted_dir','../LocalStorage/decrypted_files');
 	}
 
 	if(isset($_POST['addFileToCloud'])){
-
+		$drive_folder_id = create_drive_folder('SFSC');
+		create_file_in_drive_folder($drive_folder_id,$_POST['addFileToCloud']);
+		$myObj->uploadedFileName = $_POST['addFileToCloud'];
+		echo json_encode($myObj);
 	}
 
 	if(isset($_POST['getFileFromCloud'])){

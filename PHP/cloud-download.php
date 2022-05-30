@@ -1,7 +1,7 @@
 <?php
 require_once 'cloud-config.php';
  
-download_drive_file('1.jpg'); // say 1.jpg
+// download_drive_file('1.jpg'); // say 1.jpg
  
 function download_drive_file($filename = '') {
  

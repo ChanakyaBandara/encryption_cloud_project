@@ -1,8 +1,6 @@
 <?php
 require_once 'cloud-config.php';
   
-create_drive_folder('apifolder');
-  
 function create_drive_folder($folder) {
   
     $client = new Google_Client();
@@ -20,15 +18,26 @@ function create_drive_folder($folder) {
     $service = new Google\Service\Drive($client);
  
     try {
-        // Create a folder in root
-        $postBody = new Google\Service\Drive\DriveFile([
-            'name' => $folder,
-            'mimeType' => 'application/vnd.google-apps.folder',
-        ]);
- 
-        $result = $service->files->create($postBody);
-        echo "Folder is created successfully.";
-        print_r ($result);
+        $res = $service->files->listFiles(array("q" => "name='{$folder}' and trashed=false"));
+        $folder_id = null;
+        if (count($res->getFiles()) == 0) {
+            // Create a folder in root
+            $postBody = new Google\Service\Drive\DriveFile([
+                'name' => $folder,
+                'mimeType' => 'application/vnd.google-apps.folder',
+            ]);
+    
+            $result = $service->files->create($postBody);
+            
+            if( isset( $result['id'] ) && !empty( $result['id'] ) ){
+                $folder_id = $result['id'];
+            }
+        } else {
+            // When the folder of the folder name is existing, the folder ID is returned.
+            $folder_id = $res->getFiles()[0]->getId();
+        }
+    
+        return $folder_id;
     } catch(Exception $e) {
         if( 401 == $e->getCode() ) {
             $refresh_token = $db->get_refersh_token();

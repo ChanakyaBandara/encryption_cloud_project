@@ -17,9 +17,9 @@
 
 			$sql = "SELECT * FROM user WHERE email=\"" . $username . "\"";
 
-			$db = new DbConnect;
+			$pdo_db = new DbConnect;
 
-			if(!$conn = $db->connect()){
+			if(!$conn = $pdo_db->connect()){
 
 				echo'<script language="javascript">
 						window.alert("SQL ERROR. Please check the SQL code ")
@@ -64,7 +64,7 @@
 									localStorage.setItem("UID","'.$UID.'");
 									localStorage.setItem("Name","'.$name.'");
 									localStorage.setItem("Email","'.$username.'");
-									window.location.href = "../ecp_dashboard.html"
+									window.location.href = "callback.php"
 									</script>';
 									exit();
 
@@ -103,11 +103,11 @@
 						exit();
 		}else{
 
-			$db = new DbConnect;
+			$pdo_db = new DbConnect;
 			$hashed = password_hash($password, PASSWORD_BCRYPT);
 			$sql = "INSERT INTO `user`(`email`, `name`, `password`) VALUES ('$username','$name','$hashed')";
 
-			if(!$conn = $db->connect()){
+			if(!$conn = $pdo_db->connect()){
 				echo "SQL Error";
 				exit();
 			}

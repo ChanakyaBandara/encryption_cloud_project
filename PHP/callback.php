@@ -6,8 +6,10 @@ try {
     $token = $adapter->getAccessToken();
     $db = new DB();
     $db->update_access_token(json_encode($token));
-    echo "Access token inserted successfully.";
+    echo'<script language="javascript">
+        window.location.href = "../ecp_dashboard.html"
+        </script>';
 }
 catch( Exception $e ){
-    echo $e->getMessage() ;
-}
+    echo $e->getMessage();
+} 
