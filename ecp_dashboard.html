@@ -115,7 +115,7 @@
                       <div class="seofct-icon">
                         <i class="ti-upload"></i>Uploads
                       </div>
-                      <h2>138</h2>
+                      <h2><span id="upload_count"></span></h2>
                     </div>
                     <canvas id="seolinechart1" height="50"></canvas>
                   </div>
@@ -133,7 +133,7 @@
                       <div class="seofct-icon">
                         <i class="ti-download"></i>Downloads
                       </div>
-                      <h2>783</h2>
+                      <h2><span id="download_count"></span></h2>
                     </div>
                     <canvas id="seolinechart2" height="50"></canvas>
                   </div>
@@ -148,7 +148,7 @@
                 <h4 class="header-title">Recent Files</h4>
                 <div class="single-table">
                   <div class="table-responsive">
-                    <table class="table text-center">
+                    <table class="table text-center" id="userViewRecentFilesTBL">
                       <thead class="text-uppercase bg-success">
                         <tr class="text-white">
                           <th scope="col">#</th>
@@ -233,12 +233,19 @@
   <!-- others plugins -->
   <script src="assets/js/plugins.js"></script>
   <script src="assets/js/scripts.js"></script>
+  <script type="text/javascript" src="assets/LoadingSpinner/loading-spinner.js"></script>
+  <script type="text/javascript">
+    'use strict';
+    Spinner();
+  </script>
 
   <script language="javascript" src="js/_main.js"></script>
   <script language="javascript">
     $(document).ready(function () {
       var userName = getUserName();
       document.getElementById("userName").textContent = userName;
+      getStatistics();
+      loadRecentFiles();
     });
   </script>
 </body>

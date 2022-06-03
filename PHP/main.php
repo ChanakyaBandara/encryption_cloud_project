@@ -11,125 +11,156 @@ require 'cloud-create-folder.php';
 
 error_reporting(E_ALL ^ E_WARNING);
 
-	if(isset($_POST['loadFileTbl'])) {
-		$pdo_db = new DbConnect;
-		$conn = $pdo_db->connect();
-		$stmt = $conn->prepare("SELECT * FROM `file` where `UID` = " . $_POST['loadFileTbl'] . " ORDER BY FID DESC;");
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		//echo json_encode(Responce::withData($result));
-		echo json_encode($result);
+if (isset($_POST['loadFileTbl'])) {
+	$pdo_db = new DbConnect;
+	$conn = $pdo_db->connect();
+	$stmt = $conn->prepare("SELECT * FROM `file` where `UID` = " . $_POST['loadFileTbl'] . " ORDER BY FID DESC;");
+	$stmt->execute();
+	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	//echo json_encode(Responce::withData($result));
+	echo json_encode($result);
+}
+
+if (isset($_POST['loadfileTblSearch'])) {
+	$pdo_db = new DbConnect;
+	$conn = $pdo_db->connect();
+	$stmt = $conn->prepare("SELECT * FROM `file` where `orginal_name` LIKE \"%" . $_POST['loadfileTblSearch'] . "%\" ;");
+	$stmt->execute();
+	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	//echo json_encode(Responce::withData($result));
+	echo json_encode($result);
+}
+
+if (isset($_POST['getStatistics'])) {
+	$upload_count = getNoOfUploads($_POST['getStatistics']);
+	$download_count = getNoOfDownloads($_POST['getStatistics']);
+	$myObj->upload_count = $upload_count;
+	$myObj->download_count = $download_count;
+	echo json_encode($myObj);
+}
+
+if (isset($_POST['remark']) || isset($_POST['file'])) {
+
+	$remark = $_POST['remark'];
+	$UID = $_POST['UID'];
+
+	$file_new_name = "0";
+	$file_orginal_name = "0";
+
+	if ($_FILES['file']['size'] <> 0) {
+		$file = $_FILES['file'];
+		$allowd = array('xlsx', 'xls', 'docx', 'pdf', 'txt');
+		$fileDestination = orginal_dir;
+		$file_orginal_name = $file['name'];
+		$file_new_name = uploadfile($file, $allowd, $fileDestination);
 	}
 
-    if(isset($_POST['loadfileTblSearch'])) {
-		$pdo_db = new DbConnect;
-		$conn = $pdo_db->connect();
-		$stmt = $conn->prepare("SELECT * FROM `file` where `orginal_name` LIKE \"%" . $_POST['loadfileTblSearch'] . "%\" ;");
-		$stmt->execute();
-		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		//echo json_encode(Responce::withData($result));
-		echo json_encode($result);
-	}
-	
-    if(isset($_POST['remark']) || isset($_POST['file'])){
-		
-		$remark = $_POST['remark'];
-		$UID = $_POST['UID'];
+	$pass_key = randomPassword();
 
-		$file_new_name ="0";
-		$file_orginal_name ="0";
-		
-		if ($_FILES['file']['size'] <> 0){
-			$file = $_FILES['file'];
-			$allowd = array('xlsx','xls','docx','pdf','txt');
-			$fileDestination = orginal_dir;
-			$file_orginal_name = $file['name'];
-			$file_new_name = uploadfile($file,$allowd,$fileDestination);
-		}
+	$pdo_db = new DbConnect;
+	$sql = "INSERT INTO `file`(`orginal_name`, `file_code`, `remark`, `pass_key`, `status`, `UID`) VALUES (\"" . $file_orginal_name . "\",\"" . $file_new_name . "\",\"" . $remark . "\",\"" . $pass_key . "\",1," . $UID . ");";
 
-		$pass_key = randomPassword();
-
-        $pdo_db = new DbConnect;
-		$sql = "INSERT INTO `file`(`orginal_name`, `file_code`, `remark`, `pass_key`, `status`, `UID`) VALUES (\"" . $file_orginal_name . "\",\"" . $file_new_name . "\",\"" . $remark . "\",\"" . $pass_key . "\",1," . $UID . ");";
-
-		if(!$conn = $pdo_db->connect())
-			
-		{
-			echo'<script language="javascript">
+	if (!$conn = $pdo_db->connect()) {
+		echo '<script language="javascript">
 					window.alert("SQL ERROR. Please check the SQL code ")
 					</script>';
-					exit();
-		}
-		else
-		{
-			$stmt = $conn->prepare($sql);
-			$stmt->execute();
-			$FID = $conn->lastInsertId();
-			$myObj->FID = $FID;
-			$myObj->orginal_name = $file_orginal_name;
-			$myObj->file_code = $file_new_name;
-			$myObj->remark = $remark;
-			$myObj->pass_key = $pass_key;
-			echo json_encode($myObj);
-    	}
-	}
-
-	if(isset($_POST['encryptFile']) && isset($_POST['pass_key'])){
-		
-	    $fileExt = explode('.',$_POST['encryptFile']);
-		array_pop($fileExt);
-		$rawName = implode('.',$fileExt);
-		$orginal_file = orginal_dir.'/'.$_POST['encryptFile'];
-		$encrypted_file = encrypted_local_dir.'/'.$rawName.'.bin';
-		if(encryptFileWithKey($orginal_file,$encrypted_file,$_POST['pass_key'])){
-			$myObj->encryptedFileName = $rawName.'.bin';
-			$myObj->FileName = $_POST['encryptFile'];
-			echo json_encode($myObj);
-		}else{
-			echo json_encode(Responce::withError(500,"Internal server error"));
-		}
-	}
-
-	if(isset($_POST['addFileToCloud'])){
-		$drive_folder_id = create_drive_folder('SFSC');
-		create_file_in_drive_folder($drive_folder_id,$_POST['addFileToCloud']);
-		$myObj->uploadedFileName = $_POST['addFileToCloud'];
+		exit();
+	} else {
+		$stmt = $conn->prepare($sql);
+		$stmt->execute();
+		$FID = $conn->lastInsertId();
+		$myObj->FID = $FID;
+		$myObj->orginal_name = $file_orginal_name;
+		$myObj->file_code = $file_new_name;
+		$myObj->remark = $remark;
+		$myObj->pass_key = $pass_key;
 		echo json_encode($myObj);
 	}
+}
 
-	if(isset($_POST['getFileFromCloud'])){
-		$fileExt = explode('.',$_POST['getFileFromCloud']);
-		array_pop($fileExt);
-		$rawName = implode('.',$fileExt);
-		download_drive_file($rawName.'.bin');
-		$myObj->encryptedCloudFileName = $rawName.'.bin';
+if (isset($_POST['encryptFile']) && isset($_POST['pass_key'])) {
+
+	$fileExt = explode('.', $_POST['encryptFile']);
+	array_pop($fileExt);
+	$rawName = implode('.', $fileExt);
+	$orginal_file = orginal_dir . '/' . $_POST['encryptFile'];
+	$encrypted_file = encrypted_local_dir . '/' . $rawName . '.bin';
+	if (encryptFileWithKey($orginal_file, $encrypted_file, $_POST['pass_key'])) {
+		$myObj->encryptedFileName = $rawName . '.bin';
+		$myObj->FileName = $_POST['encryptFile'];
 		echo json_encode($myObj);
+	} else {
+		echo json_encode(Responce::withError(500, "Internal server error"));
 	}
+}
 
-	if(isset($_POST['decryptFile']) && isset($_POST['pass_key'])){
+if (isset($_POST['addFileToCloud'])) {
+	$drive_folder_id = create_drive_folder('SFSC');
+	create_file_in_drive_folder($drive_folder_id, $_POST['addFileToCloud']);
+	$myObj->uploadedFileName = $_POST['addFileToCloud'];
+	echo json_encode($myObj);
+}
 
-		$fileExt = explode('.',$_POST['decryptFile']);
-		array_pop($fileExt);
-		$rawName = implode('.',$fileExt);
-		$decrypted_file = decrypted_dir.'/'.$_POST['decryptFile'];
-		$encrypted_file = encrypted_cloud_dir.'/'.$rawName.'.bin';
+if (isset($_POST['getFileFromCloud']) && isset($_POST['FID'])) {
 
-		if(decryptFileWithKey($encrypted_file,$decrypted_file,$_POST['pass_key'])){
-			$myObj->decryptedFileName = $_POST['decryptFile'];
-			echo json_encode($myObj);
-		}else{
-			echo json_encode(Responce::withError(500,"Internal server error"));
-		}
+	$pdo_db = new DbConnect;
+	$conn = $pdo_db->connect();
+	$stmt = $conn->prepare("UPDATE `file` SET download_count = download_count + 1 where `FID` = " . $_POST['FID'] . ";");
+	$stmt->execute();
+
+	$fileExt = explode('.', $_POST['getFileFromCloud']);
+	array_pop($fileExt);
+	$rawName = implode('.', $fileExt);
+	download_drive_file($rawName . '.bin');
+	$myObj->encryptedCloudFileName = $rawName . '.bin';
+	echo json_encode($myObj);
+}
+
+if (isset($_POST['decryptFile']) && isset($_POST['pass_key'])) {
+
+	$fileExt = explode('.', $_POST['decryptFile']);
+	array_pop($fileExt);
+	$rawName = implode('.', $fileExt);
+	$decrypted_file = decrypted_dir . '/' . $_POST['decryptFile'];
+	$encrypted_file = encrypted_cloud_dir . '/' . $rawName . '.bin';
+
+	if (decryptFileWithKey($encrypted_file, $decrypted_file, $_POST['pass_key'])) {
+		$myObj->decryptedFileName = $_POST['decryptFile'];
+		echo json_encode($myObj);
+	} else {
+		echo json_encode(Responce::withError(500, "Internal server error"));
 	}
+}
 
 
-	function randomPassword() {
-        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_';
-        $pass = array(); //remember to declare $pass as an array
-        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-        for ($i = 0; $i < 20; $i++) {
-            $n = rand(0, $alphaLength);
-            $pass[] = $alphabet[$n];
-        }
-        return implode($pass); //turn the array into a string
-    }
+function randomPassword()
+{
+	$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_';
+	$pass = array(); //remember to declare $pass as an array
+	$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+	for ($i = 0; $i < 20; $i++) {
+		$n = rand(0, $alphaLength);
+		$pass[] = $alphabet[$n];
+	}
+	return implode($pass); //turn the array into a string
+}
+
+function getNoOfUploads($UID)
+{
+	$pdo_db = new DbConnect;
+	$conn = $pdo_db->connect();
+	$stmt = $conn->prepare("SELECT COUNT('FID') AS upload_count FROM `file` where `UID` = " . $UID . ";");
+	$stmt->execute();
+	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	return $result[0]['upload_count'];
+}
+
+function getNoOfDownloads($UID)
+{
+	$pdo_db = new DbConnect;
+	$conn = $pdo_db->connect();
+	$stmt = $conn->prepare("SELECT SUM('download_count') AS download_count FROM `file` where `UID` = " . $UID . ";");
+	$stmt->execute();
+	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	return $result[0]['download_count'];
+}
