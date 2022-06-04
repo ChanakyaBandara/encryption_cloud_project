@@ -159,7 +159,7 @@ function getNoOfDownloads($UID)
 {
 	$pdo_db = new DbConnect;
 	$conn = $pdo_db->connect();
-	$stmt = $conn->prepare("SELECT SUM('download_count') AS download_count FROM `file` where `UID` = " . $UID . ";");
+	$stmt = $conn->prepare("SELECT SUM(`download_count`) AS download_count FROM `file` where `UID` = " . $UID . ";");
 	$stmt->execute();
 	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	return $result[0]['download_count'];
